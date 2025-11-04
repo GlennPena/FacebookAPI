@@ -12,7 +12,10 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/posts")
-@CrossOrigin(origins = "http://localhost:5173/")
+@CrossOrigin(origins = {
+        "http://localhost:5137",
+        "https://post-ui-cf6a.onrender.com"
+})
 public class PostController {
 
     private final PostRepository repo;
