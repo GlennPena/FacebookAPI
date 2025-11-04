@@ -23,8 +23,10 @@ public class Post {
 
     private String imageUrl;
 
+    @Column(name = "created_date", nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "modified_at", nullable = false)
     private LocalDateTime modifiedAt;
 
     public Post() {}
