@@ -1,46 +1,33 @@
 package com.pena.facebookapi;
 
 import jakarta.persistence.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.time.Instant;
-import java.util.Objects;
-
+/**
+ * Single-package entity representing a Facebook-like post.
+ * Fields: id, author, content, imageUrl, createdAt, modifiedAt.
+ */
 @Entity
 @Table(name = "posts")
-@EntityListeners(AuditingEntityListener.class)
 public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Author of the post
-    @Column(nullable = false, length = 150)
+    @Column(nullable = false)
     private String author;
 
-    // Content/body of the post
-    @Column(nullable = false, columnDefinition = "text")
+    @Column(columnDefinition = "TEXT")
     private String content;
 
-    // Optional image URL
-    @Column(name = "image_url")
     private String imageUrl;
 
-    @CreatedDate
-    @Column(name = "created_date", nullable = false, updatable = false)
-    private Instant createdDate;
+    private LocalDateTime createdAt;
 
-    @LastModifiedDate
-    @Column(name = "modified_date")
-    private Instant modifiedDate;
+    private LocalDateTime modifiedAt;
 
-    public Post() {
-    }
+    public Post() {}
 
     public Post(String author, String content, String imageUrl) {
         this.author = author;
@@ -48,62 +35,35 @@ public class Post {
         this.imageUrl = imageUrl;
     }
 
+    @PrePersist
+    protected void onCreate() {
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+        this.modifiedAt = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.modifiedAt = LocalDateTime.now();
+    }
+
     // Getters and setters
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public String getAuthor() {
-        return author;
-    }
+    public String getAuthor() { return author; }
+    public void setAuthor(String author) { this.author = author; }
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
+    public String getContent() { return content; }
+    public void setContent(String content) { this.content = content; }
 
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
-    public String getContent() {
-        return content;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    public Instant getCreatedDate() {
-        return createdDate;
-    }
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    public Instant getModifiedDate() {
-        return modifiedDate;
-    }
-
-    // equals/hashCode for entity identity convenience
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Post post = (Post) o;
-
-        return Objects.equals(id, post.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
+    public LocalDateTime getModifiedAt() { return modifiedAt; }
+    public void setModifiedAt(LocalDateTime modifiedAt) { this.modifiedAt = modifiedAt; }
 }
